@@ -1,20 +1,20 @@
 package com.app.utils;
 
 public class Credentials {
-	String userName;
+	String email;
 	String password;
 
-	public Credentials(String user, String pass) {
-		userName = user;
+	public Credentials(String ema, String pass) {
+		email = ema;
 		password = pass;
 	}
 
-	public String getUser() {
-		return userName;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setUser(String user) {
-		userName = user;
+	public void setEmail(String user) {
+		email = user;
 	}
 
 	public String getPassword() {

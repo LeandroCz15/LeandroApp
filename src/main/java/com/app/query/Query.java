@@ -31,14 +31,14 @@ public class Query extends HttpServlet {
 		JSONObject jsonResult = new JSONObject();
 		try {
 			// Validations of credentials (not at database level)
-			Credentials credentials = CredentialsUtils.checkErrors(request);
+			Credentials credentials = CredentialsUtils.checkAuthHttpErrors(request);
 			String tableName = request.getParameter("tableName");
 			// Validation of table name parameter
 			if (StringUtils.isBlank(tableName)) {
 				throw new ParameterException("Table name must be valid");
 			}
 			// Validations of credentials (at database level)
-			CredentialsUtils.checkAccessAndCredentials(credentials.getUser(), credentials.getPassword(), tableName);
+			CredentialsUtils.checkAccessAndCredentials(credentials.getEmail(), credentials.getPassword(), tableName);
 			PreparedStatement st = Application.getInstance().getConnection()
 					.prepareStatement("SELECT * FROM " + request.getParameter("tableName") + " LIMIT 1000");
 			ResultSet rs = st.executeQuery();

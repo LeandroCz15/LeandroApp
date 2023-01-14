@@ -15,7 +15,7 @@ import com.app.connection.Application;
 import com.app.query.ParameterException;
 
 public interface CredentialsUtils {
-	public static Credentials checkErrors(HttpServletRequest request)
+	public static Credentials checkAuthHttpErrors(HttpServletRequest request)
 			throws ParameterException, UnsupportedEncodingException, SQLException {
 		String authHeader = request.getHeader("Authorization");
 		if (StringUtils.isBlank(authHeader)) {
@@ -38,11 +38,11 @@ public interface CredentialsUtils {
 		return null;
 	}
 
-	public static void checkAccessAndCredentials(String user, String password, String tableName)
+	public static void checkAccessAndCredentials(String email, String password, String tableName)
 			throws ParameterException, SQLException {
 		PreparedStatement st = Application.getInstance().getConnection()
-				.prepareStatement("SELECT * FROM users WHERE users_name = ? AND users_password = ? LIMIT 1");
-		st.setString(1, user);
+				.prepareStatement("SELECT * FROM users WHERE users_email = ? AND users_password = ? LIMIT 1");
+		st.setString(1, email);
 		st.setString(2, password);
 		ResultSet rs = st.executeQuery();
 		if (!rs.next()) {
