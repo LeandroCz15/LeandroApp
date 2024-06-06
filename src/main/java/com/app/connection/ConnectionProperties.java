@@ -5,5 +5,5 @@ public class ConnectionProperties {
 	public static final String PORT = "5432";
 	public static final String NAME = "jfigevnt";
 	public static final String USER = "jfigevnt";
-	public static final String PASSWORD = "pokPjsK84L_C1J0sRktZaRE6USG3eohH";
+	public static final String PASSWORD = "v_zT5YMvXYVLkgCS4IletK3EXU4wAjrK";
 }

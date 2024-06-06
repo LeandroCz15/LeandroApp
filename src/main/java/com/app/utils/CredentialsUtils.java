@@ -15,6 +15,7 @@ import com.app.connection.Application;
 import com.app.query.ParameterException;
 
 public interface CredentialsUtils {
+
 	public static Credentials checkAuthHttpErrors(HttpServletRequest request)
 			throws ParameterException, UnsupportedEncodingException, SQLException {
 		String authHeader = request.getHeader("Authorization");
@@ -57,5 +58,14 @@ public interface CredentialsUtils {
 		if (emptyResult || rs.getInt("level_required") > userLevel) {
 			throw new ParameterException("This user dont have access to the required table/s by this process");
 		}
+	}
+
+	public static int getUserLoggedLevel(Credentials credentials) throws SQLException {
+		PreparedStatement st = Application.getInstance().getConnection()
+				.prepareStatement("SELECT * FROM users WHERE users_email = ? AND users_password = ? LIMIT 1");
+		st.setString(1, credentials.getEmail());
+		st.setString(2, credentials.getPassword());
+		ResultSet rs = st.executeQuery();
+		return rs.next() ? rs.getInt("users_level") : -1;
 	}
 }

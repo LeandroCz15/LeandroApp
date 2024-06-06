@@ -3,10 +3,6 @@ package com.app.query;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.app.connection.Application;
+import com.app.utils.ConnectionUtils;
 import com.app.utils.Credentials;
 import com.app.utils.CredentialsUtils;
 
@@ -42,22 +39,10 @@ public class Query extends HttpServlet {
 			PreparedStatement st = Application.getInstance().getConnection()
 					.prepareStatement("SELECT * FROM " + request.getParameter("tableName") + " LIMIT 1000");
 			ResultSet rs = st.executeQuery();
-			ResultSetMetaData rsmd = rs.getMetaData();
-			int numColumns = rsmd.getColumnCount();
-			List<String> nameColumns = getColumnNames(rsmd);
-			JSONArray jsonArray = new JSONArray();
-			while (rs.next()) {
-				JSONObject json = new JSONObject();
-				// for each result row, we must travel trough nameColumns list in order to put
-				// key values
-				for (int i = 0; i < numColumns; i++) {
-					json.put(nameColumns.get(i), rs.getObject(i + 1));
-				}
-				jsonArray.put(json);
-			}
+			JSONArray resultArray = ConnectionUtils.convertResultSetToJsonArray(rs);
 			st.close();
 			jsonResult.put("status", "success");
-			jsonResult.put("result", jsonArray);
+			jsonResult.put("result", resultArray);
 		} catch (Exception e) {
 			jsonResult.put("status", "error");
 			jsonResult.put("message", e.getMessage());
@@ -69,12 +54,4 @@ public class Query extends HttpServlet {
 		}
 	}
 
-	private List<String> getColumnNames(ResultSetMetaData rsMetaData) throws SQLException {
-		List<String> nameColumns = new ArrayList<String>();
-		int numColumns = rsMetaData.getColumnCount();
-		for (int i = 0; i < numColumns; i++) {
-			nameColumns.add(rsMetaData.getColumnName(i + 1));
-		}
-		return nameColumns;
-	}
 }
